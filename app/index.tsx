@@ -1,7 +1,8 @@
 import { Redirect } from "expo-router";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { View, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { Colors } from "@/constants/colors";
 
 export default function Entry() {
   const [target, setTarget] = useState<"onboarding" | "(tabs)" | null>(null);
@@ -14,11 +15,20 @@ export default function Entry() {
 
   if (!target) {
     return (
-      <View className="flex-1 items-center justify-center bg-ddatu-navy">
-        <ActivityIndicator color="#00C073" />
+      <View style={styles.container}>
+        <ActivityIndicator color={Colors.green} />
       </View>
     );
   }
 
   return <Redirect href={target === "(tabs)" ? "/(tabs)" : "/onboarding"} />;
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.navy,
+  },
+});

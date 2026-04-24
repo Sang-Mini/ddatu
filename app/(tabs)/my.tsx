@@ -1,12 +1,20 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "@/constants/colors";
 
 export default function MyTab() {
   return (
-    <SafeAreaView className="flex-1 bg-ddatu-bg items-center justify-center">
-      <Text className="text-2xl mb-2">👤</Text>
-      <Text className="text-ddatu-navy font-semibold text-base">마이페이지</Text>
-      <Text className="text-gray-400 text-sm mt-1">준비 중이에요</Text>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.emoji}>👤</Text>
+      <Text style={styles.title}>마이페이지</Text>
+      <Text style={styles.sub}>준비 중이에요</Text>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: Colors.bg, alignItems: "center", justifyContent: "center" },
+  emoji: { fontSize: 32, marginBottom: 8 },
+  title: { color: Colors.navy, fontWeight: "600", fontSize: 16 },
+  sub: { color: Colors.gray500, fontSize: 14, marginTop: 4 },
+});
