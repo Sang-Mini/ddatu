@@ -81,8 +81,10 @@ function ExpertCard({ expert, onPress }: { expert: typeof experts[0]; onPress: (
   return (
     <Pressable onPress={onPress} style={styles.expertCard}>
       <View style={styles.expertRow}>
-        <View style={[styles.avatar, { backgroundColor: expert.avatarColor + "22" }]}>
-          <Text style={{ fontSize: 22 }}>{expert.avatarEmoji}</Text>
+        <View style={[styles.avatar, { backgroundColor: expert.avatarColor }]}>
+          <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
+            {expert.avatarInitial}
+          </Text>
         </View>
         <View style={styles.expertInfo}>
           <View style={styles.expertNameRow}>
@@ -181,7 +183,11 @@ export default function HomeScreen() {
               >
                 <View style={styles.recentTop}>
                   <View style={styles.recentLeft}>
-                    <Text style={{ fontSize: 16 }}>{expert.avatarEmoji}</Text>
+                    <View style={[styles.miniAvatar, { backgroundColor: expert.avatarColor }]}>
+                      <Text style={{ fontSize: 11, fontWeight: "bold", color: "white" }}>
+                        {expert.avatarInitial}
+                      </Text>
+                    </View>
                     <Text style={styles.recentNick}>@{expert.nickname}</Text>
                     <View style={[styles.typeBadge, { backgroundColor: isBuy ? "#00C07318" : "#FF6B6B18" }]}>
                       <Text style={[styles.typeText, { color: isBuy ? Colors.green : "#FF6B6B" }]}>
@@ -260,6 +266,7 @@ const styles = StyleSheet.create({
   recentCard: { backgroundColor: Colors.white, marginHorizontal: 20, marginBottom: 12, borderRadius: 20, padding: 16, shadowColor: "#000", shadowOpacity: 0.05, shadowRadius: 8, elevation: 2 },
   recentTop: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 },
   recentLeft: { flexDirection: "row", alignItems: "center", gap: 8 },
+  miniAvatar: { width: 24, height: 24, borderRadius: 12, alignItems: "center", justifyContent: "center" },
   recentNick: { color: Colors.gray500, fontSize: 12 },
   typeBadge: { borderRadius: 999, paddingHorizontal: 10, paddingVertical: 2 },
   typeText: { fontSize: 11, fontWeight: "700" },

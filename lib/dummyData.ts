@@ -5,7 +5,7 @@ export type Expert = {
   returnRate: number; // 3개월 수익률 (%)
   followers: number;
   avatarColor: string;
-  avatarEmoji: string;
+  avatarInitial: string;
   todayTrade: boolean; // 오늘 매매 여부
   specialty: string;
 };
@@ -40,7 +40,7 @@ export const experts: Expert[] = [
     returnRate: 34.7,
     followers: 12400,
     avatarColor: "#00C073",
-    avatarEmoji: "👑",
+    avatarInitial: "김",
     todayTrade: true,
     specialty: "반도체/IT",
   },
@@ -51,7 +51,7 @@ export const experts: Expert[] = [
     returnRate: 22.1,
     followers: 8900,
     avatarColor: "#F5C842",
-    avatarEmoji: "💰",
+    avatarInitial: "이",
     todayTrade: true,
     specialty: "배당/가치주",
   },
@@ -61,8 +61,8 @@ export const experts: Expert[] = [
     nickname: "방산마스터",
     returnRate: 41.3,
     followers: 15700,
-    avatarColor: "#FF6B6B",
-    avatarEmoji: "🎯",
+    avatarColor: "#0A1628",
+    avatarInitial: "박",
     todayTrade: false,
     specialty: "방산/우주",
   },

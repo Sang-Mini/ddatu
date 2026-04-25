@@ -121,8 +121,10 @@ export default function ShadowingDetail() {
         {/* 고수 정보 헤더 */}
         <View style={styles.expertHeader}>
           <View style={styles.expertRow}>
-            <View style={[styles.expertAvatar, { backgroundColor: expert.avatarColor + "22" }]}>
-              <Text style={{ fontSize: 26 }}>{expert.avatarEmoji}</Text>
+            <View style={[styles.expertAvatar, { backgroundColor: expert.avatarColor }]}>
+              <Text style={{ fontSize: 22, fontWeight: "bold", color: "white" }}>
+                {expert.avatarInitial}
+              </Text>
             </View>
             <View style={{ flex: 1 }}>
               <View style={styles.expertNameRow}>
