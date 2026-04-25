@@ -12,7 +12,15 @@ function TabIcon({ emoji, label, focused }: TabIconProps) {
   return (
     <View style={styles.iconWrapper}>
       <Text style={styles.emoji}>{emoji}</Text>
-      <Text style={[styles.label, { color: focused ? Colors.green : Colors.gray500, fontWeight: focused ? "700" : "500" }]}>
+      <Text
+        style={[
+          styles.label,
+          {
+            color: focused ? Colors.green : Colors.gray500,
+            fontWeight: focused ? "700" : "500",
+          },
+        ]}
+      >
         {label}
       </Text>
     </View>
@@ -41,19 +49,48 @@ export default function TabLayout() {
     >
       <Tabs.Screen
         name="index"
-        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🏠" label="홈" focused={focused} /> }}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <TabIcon emoji="🏠" label="홈" focused={focused} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="learn"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <TabIcon emoji="📚" label="학습" focused={focused} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="invest"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <TabIcon emoji="🎮" label="모의투자" focused={focused} />
+          ),
+        }}
       />
       <Tabs.Screen
         name="shadowing"
-        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="👁️" label="쉐도잉" focused={focused} /> }}
-      />
-      <Tabs.Screen
-        name="portfolio"
-        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="📊" label="포트폴리오" focused={focused} /> }}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <TabIcon emoji="👁️" label="쉐도잉" focused={focused} />
+          ),
+        }}
       />
       <Tabs.Screen
         name="my"
-        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="👤" label="마이" focused={focused} /> }}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <TabIcon emoji="👤" label="마이" focused={focused} />
+          ),
+        }}
+      />
+      {/* portfolio 탭은 숨김 처리 (파일은 유지) */}
+      <Tabs.Screen
+        name="portfolio"
+        options={{ href: null }}
       />
     </Tabs>
   );
@@ -67,9 +104,9 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   emoji: {
-    fontSize: 22,
+    fontSize: 20,
   },
   label: {
-    fontSize: 10,
+    fontSize: 9,
   },
 });
