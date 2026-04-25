@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { experts, trades, themeKeywords, todayHotTrade } from "@/lib/dummyData";
 import { Colors } from "@/constants/colors";
 
@@ -21,7 +22,7 @@ function Header() {
         hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
         style={styles.bellBtn}
       >
-        <Text style={styles.bellIcon}>🔔</Text>
+        <Ionicons name="notifications-outline" size={22} color={Colors.navy} />
       </TouchableOpacity>
     </View>
   );
@@ -212,7 +213,6 @@ const styles = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20, paddingVertical: 16 },
   logo: { color: Colors.green, fontSize: 24, fontWeight: "800" },
   bellBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center", borderRadius: 20, backgroundColor: Colors.white, shadowColor: "#000", shadowOpacity: 0.06, shadowRadius: 4, elevation: 2 },
-  bellIcon: { fontSize: 20 },
 
   // 배너
   banner: { marginHorizontal: 20, marginBottom: 24, borderRadius: 20, backgroundColor: Colors.navy, padding: 20, overflow: "hidden" },

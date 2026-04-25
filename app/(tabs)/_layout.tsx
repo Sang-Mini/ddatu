@@ -1,24 +1,27 @@
 import { Tabs } from "expo-router";
 import { View, Text, StyleSheet, Platform } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/colors";
 
 type TabIconProps = {
-  emoji: string;
+  name: keyof typeof Ionicons.glyphMap;
   label: string;
   focused: boolean;
 };
 
-function TabIcon({ emoji, label, focused }: TabIconProps) {
+function TabIcon({ name, label, focused }: TabIconProps) {
   return (
     <View style={styles.iconWrapper}>
-      <Text style={styles.emoji}>{emoji}</Text>
+      <Ionicons
+        name={name}
+        size={24}
+        color={focused ? Colors.green : Colors.gray500}
+      />
       <Text
         style={[
           styles.label,
-          {
-            color: focused ? Colors.green : Colors.gray500,
-            fontWeight: focused ? "700" : "500",
-          },
+          { color: focused ? Colors.green : Colors.gray500,
+            fontWeight: focused ? "700" : "500" },
         ]}
       >
         {label}
@@ -51,7 +54,11 @@ export default function TabLayout() {
         name="index"
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="🏠" label="홈" focused={focused} />
+            <TabIcon
+              name={focused ? "home" : "home-outline"}
+              label="홈"
+              focused={focused}
+            />
           ),
         }}
       />
@@ -59,7 +66,11 @@ export default function TabLayout() {
         name="learn"
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="📚" label="학습" focused={focused} />
+            <TabIcon
+              name={focused ? "book" : "book-outline"}
+              label="학습"
+              focused={focused}
+            />
           ),
         }}
       />
@@ -67,7 +78,11 @@ export default function TabLayout() {
         name="invest"
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="🎮" label="모의투자" focused={focused} />
+            <TabIcon
+              name={focused ? "trending-up" : "trending-up-outline"}
+              label="모의투자"
+              focused={focused}
+            />
           ),
         }}
       />
@@ -75,7 +90,11 @@ export default function TabLayout() {
         name="shadowing"
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="👁️" label="쉐도잉" focused={focused} />
+            <TabIcon
+              name={focused ? "eye" : "eye-outline"}
+              label="쉐도잉"
+              focused={focused}
+            />
           ),
         }}
       />
@@ -83,11 +102,14 @@ export default function TabLayout() {
         name="my"
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="👤" label="마이" focused={focused} />
+            <TabIcon
+              name={focused ? "person" : "person-outline"}
+              label="마이"
+              focused={focused}
+            />
           ),
         }}
       />
-      {/* portfolio 탭은 숨김 처리 (파일은 유지) */}
       <Tabs.Screen
         name="portfolio"
         options={{ href: null }}
@@ -100,11 +122,8 @@ const styles = StyleSheet.create({
   iconWrapper: {
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 4,
-    gap: 2,
-  },
-  emoji: {
-    fontSize: 20,
+    paddingTop: 2,
+    gap: 3,
   },
   label: {
     fontSize: 9,
