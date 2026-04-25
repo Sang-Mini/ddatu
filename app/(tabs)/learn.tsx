@@ -7,6 +7,7 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/colors";
 
 // ── 타입 ─────────────────────────────────────────────────────
@@ -85,16 +86,20 @@ const units: Unit[] = [
 function StreakHeader() {
   return (
     <View style={styles.streakHeader}>
+      {/* 스트릭 */}
       <View style={styles.streakItem}>
-        <Text style={styles.streakEmoji}>🔥</Text>
+        <Ionicons name="flame" size={20} color="#FF6B35" />
         <Text style={styles.streakValue}>{STREAK}</Text>
         <Text style={styles.streakLabel}>일 연속</Text>
       </View>
+
       <View style={styles.logoWrap}>
         <Text style={styles.logoText}>따투 학습</Text>
       </View>
+
+      {/* XP */}
       <View style={styles.streakItem}>
-        <Text style={styles.streakEmoji}>⚡</Text>
+        <Ionicons name="flash" size={20} color={Colors.gold} />
         <Text style={styles.streakValue}>{XP}</Text>
         <Text style={styles.streakLabel}>XP</Text>
       </View>
@@ -109,23 +114,19 @@ function TodayProgressBanner() {
   return (
     <View style={styles.todayBanner}>
       <View style={styles.todayTop}>
-        <Text style={styles.todayEmoji}>📖</Text>
+        <View style={styles.todayIconWrap}>
+          <Ionicons name="reader-outline" size={24} color={Colors.green} />
+        </View>
         <View style={{ flex: 1, marginLeft: 12 }}>
           <Text style={styles.todayTitle}>
             오늘 학습 완료까지 {remaining}개 남았어요!
           </Text>
-          <Text style={styles.todaySub}>
-            {TODAY_DONE}/{TODAY_TOTAL} 완료
-          </Text>
+          <Text style={styles.todaySub}>{TODAY_DONE}/{TODAY_TOTAL} 완료</Text>
         </View>
-        <Text style={styles.todayPercent}>
-          {Math.round(progress * 100)}%
-        </Text>
+        <Text style={styles.todayPercent}>{Math.round(progress * 100)}%</Text>
       </View>
-
-      {/* 진행 바 */}
       <View style={styles.progressTrack}>
-        <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
+        <View style={[styles.progressFill, { width: `${progress * 100}%` as any }]} />
       </View>
     </View>
   );
@@ -137,9 +138,9 @@ function LessonRow({ lesson, index }: { lesson: Lesson; index: number }) {
 
   const handlePress = () => {
     if (isLocked) {
-      Alert.alert("🔒 잠긴 레슨", "이전 레슨을 먼저 완료해야 열려요!");
+      Alert.alert("잠긴 레슨", "이전 레슨을 먼저 완료해야 열려요!");
     } else {
-      Alert.alert("✅ 학습 시작!", `"${lesson.title}" 레슨을 시작할게요!`);
+      Alert.alert("학습 시작!", `"${lesson.title}" 레슨을 시작할게요!`);
     }
   };
 
@@ -157,16 +158,18 @@ function LessonRow({ lesson, index }: { lesson: Lesson; index: number }) {
           isLocked && styles.lessonIconLocked,
         ]}
       >
-        <Text style={styles.lessonIconText}>
-          {isDone ? "✓" : isLocked ? "🔒" : "▶"}
-        </Text>
+        {isDone ? (
+          <Ionicons name="checkmark-circle" size={20} color={Colors.white} />
+        ) : isLocked ? (
+          <Ionicons name="lock-closed" size={16} color={Colors.gray500} />
+        ) : (
+          <Ionicons name="play-circle" size={20} color={Colors.green} />
+        )}
       </View>
 
       {/* 텍스트 */}
       <View style={{ flex: 1, marginLeft: 12 }}>
-        <Text
-          style={[styles.lessonTitle, isLocked && styles.lessonTitleLocked]}
-        >
+        <Text style={[styles.lessonTitle, isLocked && styles.lessonTitleLocked]}>
           레슨 {index + 1}. {lesson.title}
         </Text>
       </View>
@@ -190,40 +193,30 @@ function UnitCard({ unit }: { unit: Unit }) {
   const doneCount = unit.lessons.filter((l) => l.status === "done").length;
   const total = unit.lessons.length;
   const progress = doneCount / total;
-  const isAllLocked = doneCount === 0;
 
   return (
     <View style={styles.unitCard}>
-      {/* 유닛 헤더 */}
       <View style={styles.unitHeader}>
         <View style={[styles.unitNumBadge, { backgroundColor: unit.color + "18" }]}>
-          <Text style={[styles.unitNumText, { color: unit.color }]}>
-            UNIT {unit.id}
-          </Text>
+          <Text style={[styles.unitNumText, { color: unit.color }]}>UNIT {unit.id}</Text>
         </View>
-        <View style={styles.unitTagWrap}>
-          <Text style={[styles.unitTag, { color: unit.color }]}>{unit.tag}</Text>
-        </View>
+        <Text style={[styles.unitTag, { color: unit.color }]}>{unit.tag}</Text>
       </View>
 
       <Text style={styles.unitTitle}>{unit.title}</Text>
 
-      {/* 완료율 바 */}
       <View style={styles.unitProgressRow}>
         <View style={styles.unitProgressTrack}>
           <View
             style={[
               styles.unitProgressFill,
-              { width: `${progress * 100}%`, backgroundColor: unit.color },
+              { width: `${progress * 100}%` as any, backgroundColor: unit.color },
             ]}
           />
         </View>
-        <Text style={styles.unitProgressLabel}>
-          {doneCount}/{total}
-        </Text>
+        <Text style={styles.unitProgressLabel}>{doneCount}/{total}</Text>
       </View>
 
-      {/* 레슨 리스트 */}
       <View style={styles.lessonList}>
         {unit.lessons.map((lesson, i) => (
           <LessonRow key={i} lesson={lesson} index={i} />
@@ -238,17 +231,20 @@ function QuizBanner() {
     <View style={styles.quizBanner}>
       <View style={styles.quizLeft}>
         <View style={styles.quizIconWrap}>
-          <Text style={{ fontSize: 22 }}>💡</Text>
+          <Ionicons name="bulb" size={24} color={Colors.green} />
         </View>
         <View style={{ flex: 1, marginLeft: 12 }}>
           <Text style={styles.quizTitle}>오늘의 용어 퀴즈</Text>
-          <Text style={styles.quizQuestion}>
-            PER이 낮을수록 좋은 걸까요?
-          </Text>
+          <Text style={styles.quizQuestion}>PER이 낮을수록 좋은 걸까요?</Text>
         </View>
       </View>
       <TouchableOpacity
-        onPress={() => Alert.alert("💡 퀴즈", "PER이 낮을수록 주가가 저평가됐다는 신호일 수 있어요!\n\n단, 업종 평균과 비교하는 게 중요해요.")}
+        onPress={() =>
+          Alert.alert(
+            "퀴즈",
+            "PER이 낮을수록 주가가 저평가됐다는 신호일 수 있어요!\n\n단, 업종 평균과 비교하는 게 중요해요."
+          )
+        }
         activeOpacity={0.8}
         style={styles.quizBtn}
       >
@@ -269,13 +265,9 @@ export default function LearnScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* 오늘의 학습 진행 배너 */}
         <TodayProgressBanner />
-
-        {/* 퀴즈 배너 */}
         <QuizBanner />
 
-        {/* 학습 커리큘럼 */}
         <View style={styles.curriculumHeader}>
           <Text style={styles.curriculumTitle}>학습 커리큘럼</Text>
           <Text style={styles.curriculumSub}>4개 유닛 · 12개 레슨</Text>
@@ -294,13 +286,8 @@ export default function LearnScreen() {
 // ── 스타일 ────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.bg,
-  },
-  scrollContent: {
-    paddingBottom: 24,
-  },
+  safeArea: { flex: 1, backgroundColor: Colors.bg },
+  scrollContent: { paddingBottom: 24 },
 
   // 스트릭 헤더
   streakHeader: {
@@ -314,31 +301,14 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.gray100,
   },
   streakItem: {
-    alignItems: "center",
     flexDirection: "row",
+    alignItems: "center",
     gap: 4,
   },
-  streakEmoji: {
-    fontSize: 18,
-  },
-  streakValue: {
-    color: Colors.text,
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  streakLabel: {
-    color: Colors.gray500,
-    fontSize: 12,
-  },
-  logoWrap: {
-    flex: 1,
-    alignItems: "center",
-  },
-  logoText: {
-    color: Colors.navy,
-    fontSize: 17,
-    fontWeight: "800",
-  },
+  streakValue: { color: Colors.text, fontSize: 16, fontWeight: "700" },
+  streakLabel: { color: Colors.gray500, fontSize: 12 },
+  logoWrap: { flex: 1, alignItems: "center" },
+  logoText: { color: Colors.navy, fontSize: 17, fontWeight: "800" },
 
   // 오늘의 진행 배너
   todayBanner: {
@@ -352,40 +322,25 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
-  todayTop: {
-    flexDirection: "row",
+  todayTop: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
+  todayIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: Colors.green + "15",
     alignItems: "center",
-    marginBottom: 12,
+    justifyContent: "center",
   },
-  todayEmoji: {
-    fontSize: 28,
-  },
-  todayTitle: {
-    color: Colors.text,
-    fontSize: 14,
-    fontWeight: "700",
-    marginBottom: 2,
-  },
-  todaySub: {
-    color: Colors.gray500,
-    fontSize: 12,
-  },
-  todayPercent: {
-    color: Colors.green,
-    fontSize: 18,
-    fontWeight: "800",
-  },
+  todayTitle: { color: Colors.text, fontSize: 14, fontWeight: "700", marginBottom: 2 },
+  todaySub: { color: Colors.gray500, fontSize: 12 },
+  todayPercent: { color: Colors.green, fontSize: 18, fontWeight: "800" },
   progressTrack: {
     height: 8,
     backgroundColor: Colors.gray100,
     borderRadius: 4,
     overflow: "hidden",
   },
-  progressFill: {
-    height: "100%",
-    backgroundColor: Colors.green,
-    borderRadius: 4,
-  },
+  progressFill: { height: "100%", backgroundColor: Colors.green, borderRadius: 4 },
 
   // 퀴즈 배너
   quizBanner: {
@@ -398,43 +353,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  quizLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-    marginRight: 12,
-  },
+  quizLeft: { flexDirection: "row", alignItems: "center", flex: 1, marginRight: 12 },
   quizIconWrap: {
     width: 44,
     height: 44,
     borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: Colors.green + "25",
     alignItems: "center",
     justifyContent: "center",
   },
-  quizTitle: {
-    color: "rgba(255,255,255,0.6)",
-    fontSize: 11,
-    fontWeight: "600",
-    marginBottom: 3,
-  },
-  quizQuestion: {
-    color: Colors.white,
-    fontSize: 14,
-    fontWeight: "700",
-    lineHeight: 20,
-  },
+  quizTitle: { color: "rgba(255,255,255,0.6)", fontSize: 11, fontWeight: "600", marginBottom: 3 },
+  quizQuestion: { color: Colors.white, fontSize: 14, fontWeight: "700", lineHeight: 20 },
   quizBtn: {
     backgroundColor: Colors.green,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 10,
   },
-  quizBtnText: {
-    color: Colors.white,
-    fontSize: 13,
-    fontWeight: "700",
-  },
+  quizBtnText: { color: Colors.white, fontSize: 13, fontWeight: "700" },
 
   // 커리큘럼 헤더
   curriculumHeader: {
@@ -444,15 +380,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 12,
   },
-  curriculumTitle: {
-    color: Colors.navy,
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  curriculumSub: {
-    color: Colors.gray500,
-    fontSize: 12,
-  },
+  curriculumTitle: { color: Colors.navy, fontSize: 16, fontWeight: "700" },
+  curriculumSub: { color: Colors.gray500, fontSize: 12 },
 
   // 유닛 카드
   unitCard: {
@@ -473,27 +402,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 6,
   },
-  unitNumBadge: {
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-  },
-  unitNumText: {
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-  },
-  unitTagWrap: {},
-  unitTag: {
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  unitTitle: {
-    color: Colors.text,
-    fontSize: 16,
-    fontWeight: "700",
-    marginBottom: 10,
-  },
+  unitNumBadge: { borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 },
+  unitNumText: { fontSize: 11, fontWeight: "700", letterSpacing: 0.5 },
+  unitTag: { fontSize: 12, fontWeight: "600" },
+  unitTitle: { color: Colors.text, fontSize: 16, fontWeight: "700", marginBottom: 10 },
   unitProgressRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -507,10 +419,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     overflow: "hidden",
   },
-  unitProgressFill: {
-    height: "100%",
-    borderRadius: 3,
-  },
+  unitProgressFill: { height: "100%", borderRadius: 3 },
   unitProgressLabel: {
     color: Colors.gray500,
     fontSize: 12,
@@ -519,10 +428,8 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
 
-  // 레슨 리스트
-  lessonList: {
-    gap: 8,
-  },
+  // 레슨 행
+  lessonList: { gap: 8 },
   lessonRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -530,55 +437,31 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 12,
   },
-  lessonRowLocked: {
-    opacity: 0.6,
-  },
+  lessonRowLocked: { opacity: 0.55 },
   lessonIcon: {
     width: 36,
     height: 36,
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.green + "18",
+    backgroundColor: Colors.green + "15",
   },
-  lessonIconDone: {
-    backgroundColor: Colors.green,
-  },
-  lessonIconLocked: {
-    backgroundColor: Colors.gray100,
-  },
-  lessonIconText: {
-    fontSize: 14,
-    color: Colors.green,
-  },
-  lessonTitle: {
-    color: Colors.text,
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  lessonTitleLocked: {
-    color: Colors.gray500,
-  },
+  lessonIconDone: { backgroundColor: Colors.green },
+  lessonIconLocked: { backgroundColor: Colors.gray100 },
+  lessonTitle: { color: Colors.text, fontSize: 14, fontWeight: "500" },
+  lessonTitleLocked: { color: Colors.gray500 },
   doneBadge: {
     backgroundColor: Colors.green + "18",
     borderRadius: 6,
     paddingHorizontal: 8,
     paddingVertical: 3,
   },
-  doneBadgeText: {
-    color: Colors.green,
-    fontSize: 11,
-    fontWeight: "700",
-  },
+  doneBadgeText: { color: Colors.green, fontSize: 11, fontWeight: "700" },
   lockedBadge: {
     backgroundColor: Colors.gray100,
     borderRadius: 6,
     paddingHorizontal: 8,
     paddingVertical: 3,
   },
-  lockedBadgeText: {
-    color: Colors.gray500,
-    fontSize: 11,
-    fontWeight: "600",
-  },
+  lockedBadgeText: { color: Colors.gray500, fontSize: 11, fontWeight: "600" },
 });

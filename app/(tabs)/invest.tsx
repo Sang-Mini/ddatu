@@ -7,6 +7,7 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/colors";
 
 // ── 더미 데이터 ───────────────────────────────────────────────
@@ -47,7 +48,8 @@ function AssetHeader() {
     <View style={styles.assetHeader}>
       {/* 뱃지 */}
       <View style={styles.virtualBadge}>
-        <Text style={styles.virtualBadgeText}>가상 포트폴리오</Text>
+        <Ionicons name="game-controller-outline" size={13} color="rgba(255,255,255,0.7)" />
+        <Text style={[styles.virtualBadgeText, { marginLeft: 5 }]}>가상 포트폴리오</Text>
       </View>
 
       {/* 평가금액 */}
@@ -152,7 +154,7 @@ function StockCard({ stock }: { stock: Stock }) {
 function TipBanner() {
   return (
     <View style={styles.tipBanner}>
-      <Text style={{ fontSize: 18 }}>💬</Text>
+      <Ionicons name="chatbubble-ellipses" size={22} color={Colors.gold} />
       <View style={{ flex: 1, marginLeft: 10 }}>
         <Text style={styles.tipTitle}>쉐도잉 팁</Text>
         <Text style={styles.tipText}>
@@ -263,6 +265,8 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   virtualBadge: {
+    flexDirection: "row",
+    alignItems: "center",
     alignSelf: "flex-start",
     backgroundColor: "rgba(255,255,255,0.12)",
     borderRadius: 8,
