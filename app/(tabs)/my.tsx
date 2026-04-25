@@ -17,7 +17,7 @@ export default function MyTab() {
       {/* 프로필 헤더 */}
       <View style={styles.profileCard}>
         <View style={styles.avatarCircle}>
-          <Ionicons name="person" size={36} color={Colors.green} />
+          <Text style={styles.avatarInitial}>투</Text>
         </View>
         <View style={styles.profileInfo}>
           <Text style={styles.profileName}>투자 초보자</Text>
@@ -85,10 +85,15 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: Colors.green + "15",
+    backgroundColor: Colors.green,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 14,
+  },
+  avatarInitial: {
+    color: Colors.white,
+    fontSize: 26,
+    fontWeight: "700",
   },
   profileInfo: { flex: 1 },
   profileName: { color: Colors.text, fontSize: 18, fontWeight: "700", marginBottom: 6 },

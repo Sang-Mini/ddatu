@@ -34,7 +34,7 @@ function TodayBanner({ onPress }: { onPress: () => void }) {
   return (
     <Pressable onPress={onPress} style={styles.banner}>
       <View style={styles.bannerRow}>
-        <Text style={{ fontSize: 18 }}>🔥</Text>
+        <Ionicons name="trending-up" size={20} color={Colors.green} />
         <Text style={styles.bannerLabel}>오늘 고수들이 주목한 종목</Text>
       </View>
 
@@ -114,7 +114,7 @@ function ExpertCard({ expert, onPress }: { expert: typeof experts[0]; onPress: (
 function ThemeChip({ label, changeRate, hot }: typeof themeKeywords[0]) {
   return (
     <View style={[styles.themeChip, hot ? styles.themeChipHot : styles.themeChipNormal]}>
-      {hot && <Text style={{ fontSize: 11 }}>🔥</Text>}
+      {hot && <Ionicons name="flame" size={12} color="#FF6B35" />}
       <Text style={[styles.themeLabel, { color: hot ? Colors.white : Colors.text }]}>
         {label}
       </Text>
