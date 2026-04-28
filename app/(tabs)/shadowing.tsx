@@ -3,14 +3,64 @@ import {
   Text,
   ScrollView,
   Pressable,
+  TouchableOpacity,
   StyleSheet,
   Alert,
+  Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import Svg, { Polyline, Defs, LinearGradient, Stop, Path } from "react-native-svg";
 import { trades, experts } from "@/lib/dummyData";
 import { Colors } from "@/constants/colors";
+
+const { width } = Dimensions.get("window");
+const CARD_PADDING = 16;
+const CARD_MARGIN = 20;
+const CHART_WIDTH = width - CARD_MARGIN * 2 - CARD_PADDING * 2;
+const CHART_HEIGHT = 40;
+
+// ── 미니 차트 ─────────────────────────────────────────────────
+
+function MiniChart({ data, positive }: { data: number[]; positive: boolean }) {
+  if (!data || data.length < 2) return null;
+
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+
+  const points = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * CHART_WIDTH;
+    const y = CHART_HEIGHT - ((v - min) / range) * CHART_HEIGHT;
+    return `${x},${y}`;
+  });
+
+  const linePoints = points.join(" ");
+  const areaPoints = `0,${CHART_HEIGHT} ${linePoints} ${CHART_WIDTH},${CHART_HEIGHT}`;
+  const color = positive ? Colors.green : "#FF6B6B";
+  const gradId = positive ? "greenGradFeed" : "redGradFeed";
+
+  return (
+    <Svg width={CHART_WIDTH} height={CHART_HEIGHT + 4}>
+      <Defs>
+        <LinearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+          <Stop offset="0" stopColor={color} stopOpacity="0.25" />
+          <Stop offset="1" stopColor={color} stopOpacity="0" />
+        </LinearGradient>
+      </Defs>
+      <Path d={`M ${areaPoints} Z`} fill={`url(#${gradId})`} />
+      <Polyline
+        points={linePoints}
+        fill="none"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
 
 // ── 매매 카드 ─────────────────────────────────────────────────
 
@@ -22,19 +72,34 @@ function TradeCard({ trade }: { trade: typeof trades[0] }) {
   const accentColor = isPositive ? Colors.green : "#FF6B6B";
   const typeColor = isBuy ? Colors.green : "#FF6B6B";
 
+  const handleShadow = () => {
+    Alert.alert(
+      "따라하기 확인",
+      `${trade.stockName}을 ${trade.type}할까요?\n\n체결가: ${trade.price.toLocaleString()}원`,
+      [
+        { text: "취소", style: "cancel" },
+        {
+          text: "따라하기",
+          onPress: () =>
+            Alert.alert("완료", "쉐도잉 리스트에 추가됐어요!\n매수 시점을 함께 체득해봐요."),
+        },
+      ]
+    );
+  };
+
   return (
     <Pressable
       onPress={() => router.push(`/shadowing/${trade.id}`)}
       style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
     >
-      {/* 상단: 아바타 + 고수명 + 뱃지 */}
+      {/* 상단: 아바타 + 고수명 + 시간 + 타입 뱃지 */}
       <View style={styles.cardTop}>
         <View style={[styles.avatar, { backgroundColor: expert.avatarColor }]}>
           <Text style={styles.avatarText}>{expert.avatarInitial}</Text>
         </View>
         <View style={styles.expertInfo}>
           <Text style={styles.expertName}>{expert.name}</Text>
-          <Text style={styles.expertNick}>@{expert.nickname}</Text>
+          <Text style={styles.expertNick}>@{expert.nickname} · {trade.time}</Text>
         </View>
         <View style={[styles.typeBadge, { backgroundColor: typeColor + "18" }]}>
           <Text style={[styles.typeText, { color: typeColor }]}>{trade.type}</Text>
@@ -55,7 +120,12 @@ function TradeCard({ trade }: { trade: typeof trades[0] }) {
         </View>
       </View>
 
-      {/* 하단: 매매 이유 (좌측 그린 보더) */}
+      {/* 미니 차트 */}
+      <View style={styles.chartWrap}>
+        <MiniChart data={trade.chartData} positive={isPositive} />
+      </View>
+
+      {/* 매매 이유 (좌측 그린 보더) */}
       <View style={styles.reasonWrap}>
         <View style={styles.greenBar} />
         <Text style={styles.reasonText} numberOfLines={2}>
@@ -63,14 +133,25 @@ function TradeCard({ trade }: { trade: typeof trades[0] }) {
         </Text>
       </View>
 
-      {/* 지표 칩 */}
-      <View style={styles.indicatorRow}>
-        {trade.indicators.map((ind) => (
-          <View key={ind} style={styles.indicatorChip}>
-            <Text style={styles.indicatorText}>{ind}</Text>
-          </View>
-        ))}
-        <Text style={styles.dateText}>{trade.date.slice(5)}</Text>
+      {/* 지표 칩 + 따라하기 버튼 */}
+      <View style={styles.cardBottom}>
+        <View style={styles.indicatorRow}>
+          {trade.indicators.slice(0, 2).map((ind) => (
+            <View key={ind} style={styles.indicatorChip}>
+              <Text style={styles.indicatorText}>{ind}</Text>
+            </View>
+          ))}
+        </View>
+        <TouchableOpacity
+          onPress={(e) => {
+            e.stopPropagation?.();
+            handleShadow();
+          }}
+          activeOpacity={0.8}
+          style={styles.shadowBtn}
+        >
+          <Text style={styles.shadowBtnText}>따라하기</Text>
+        </TouchableOpacity>
       </View>
     </Pressable>
   );
@@ -183,7 +264,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.white,
     borderRadius: 16,
-    padding: 16,
+    padding: CARD_PADDING,
     marginBottom: 12,
     shadowColor: "#000",
     shadowOpacity: 0.05,
@@ -197,7 +278,7 @@ const styles = StyleSheet.create({
   cardTop: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 14,
+    marginBottom: 12,
   },
   avatar: {
     width: 40,
@@ -219,10 +300,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-between",
-    marginBottom: 12,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray100,
+    marginBottom: 10,
   },
   stockName: { color: Colors.navy, fontSize: 17, fontWeight: "700", marginBottom: 3 },
   stockMeta: { color: Colors.gray500, fontSize: 12 },
@@ -230,18 +308,28 @@ const styles = StyleSheet.create({
   changeRate: { fontSize: 18, fontWeight: "800", marginBottom: 2 },
   price: { color: Colors.gray700, fontSize: 13, fontWeight: "500" },
 
+  // 미니 차트
+  chartWrap: {
+    marginBottom: 10,
+    borderRadius: 8,
+    overflow: "hidden",
+  },
+
   // 매매 이유
   reasonWrap: {
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 10,
     marginBottom: 12,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: Colors.gray100,
   },
   greenBar: {
     width: 3,
     borderRadius: 2,
     backgroundColor: Colors.green,
-    minHeight: 36,
+    minHeight: 32,
     marginTop: 2,
   },
   reasonText: {
@@ -251,12 +339,18 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 
-  // 지표 칩
+  // 카드 하단 (지표 + 따라하기)
+  cardBottom: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   indicatorRow: {
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
     gap: 6,
+    flex: 1,
   },
   indicatorChip: {
     backgroundColor: Colors.green + "12",
@@ -265,5 +359,16 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   indicatorText: { color: Colors.green, fontSize: 11, fontWeight: "600" },
-  dateText: { color: Colors.gray300, fontSize: 11, marginLeft: "auto" },
+
+  // 따라하기 버튼
+  shadowBtn: {
+    height: 44,
+    paddingHorizontal: 16,
+    backgroundColor: Colors.green,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 10,
+  },
+  shadowBtnText: { color: Colors.white, fontSize: 13, fontWeight: "700" },
 });

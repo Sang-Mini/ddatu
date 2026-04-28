@@ -34,7 +34,7 @@ function TodayBanner({ onPress }: { onPress: () => void }) {
   return (
     <Pressable onPress={onPress} style={styles.banner}>
       <View style={styles.bannerRow}>
-        <Ionicons name="trending-up" size={20} color={Colors.green} />
+        <Ionicons name="flame" size={20} color={Colors.white} />
         <Text style={styles.bannerLabel}>오늘 고수들이 주목한 종목</Text>
       </View>
 
